@@ -96,7 +96,7 @@ class TestParserGood < Test::Unit::TestCase
             # that should be plenty.
         end
 
-        assert(xml.include? 41)
+        assert(xml.include?(41))
     end
 
     def test_recursion

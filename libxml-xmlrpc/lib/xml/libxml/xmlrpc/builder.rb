@@ -2,7 +2,39 @@ require 'base64'
 
 module XML
     module XMLRPC
+        #
+        # Class to build XML-RPC responses and calls.
+        #
+        # Example:
+        #
+        #   XML::XMLRPC::Builder.foo(1,2,3) # generates xml for method call
+        #                                   # 'foo' with arguments of int 1, 2
+        #                                   # and 3
+        #
+        #   XML::XMLRPC::Builder.response(1,2,3) # builds a response with args
+        #                                        # 1,2,3
+        #
+        #   # builds a fault response with faultCode 0 and faultString "Foo"
+        #   XML::XMLRPC::Builder.fault_response(2, "Foo") 
+        #
+        #   # builds a call called 'fault_response'
+        #   XML::XMLRPC::Builder.call('fault_response', 1, 2, 3)
+        #
+        # Notes:
+        #  * To build a Base64 object, check out the XML::XMLRPC::Builder::Base64 class.
+        #  * Date (and all other) objects must inherit directly from class
+        #    Date or be the class themselves, DateTime is an example of direct
+        #    inheritance of Date. Time (which inherits from Object) will NOT
+        #    work.
+        #  * All responses are encoded UTF-8. Be sure your strings, etc are
+        #    UTF-8 before passing them into this module.
+        #
         module Builder
+            #
+            # Builds the appropriate XML for a methodCall.
+            # 
+            # Takes a methodname and a series of arguments.
+            # 
             def self.call(methodname, *args)
                 methodname = methodname.to_s
 
@@ -14,6 +46,9 @@ module XML
                 return output
             end
 
+            #
+            # Builds a response. Takes a series of response arguments.
+            #
             def self.response(*args)
                 output = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n"
                 output += "<methodResponse>"
@@ -22,6 +57,9 @@ module XML
 
             end
 
+            #
+            # Builds a fault response. Takes a faultCode (integer) and a faultMessage (string).
+            #
             def self.fault_response(faultCode, faultMessage)
                 output = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n"
                 output += "<methodResponse>"
@@ -32,23 +70,50 @@ module XML
                 output += "</methodResponse>"
             end
 
+            #
+            # Just calls #call, your method name will be the first argument and
+            # will be passed to call properly.
+            #
             def self.method_missing(*args)
                 self.call(*args)
             end
         end
 
+        #
+        # Thrown when Builder encounters an error.
+        #
         class Builder::Error < Exception
         end
 
+        #
+        # Base64 type class. The 'Base64' module that comes with ruby does not
+        # hold anything (it's not a class), and since our parser depends on
+        # having the appropriate type to generate the right value clause, this
+        # is required for Base64 transfers.
+        # 
         class Builder::Base64
+
+            #
+            # Takes a string.
+            #
             def initialize(str)
                 @string = str
             end
 
+            #
+            # Encodes the encapsulated string as Base64.
+            #
             def encode
                 ::Base64.encode64(@string)
             end
         end
+
+        #
+        # Generates Values. This has several subclasses that map to
+        # core types which I will not document.
+        # 
+        # RTFS.
+        #
 
         module Builder::Value
 
@@ -138,9 +203,6 @@ module XML
                     output += "</struct>"
                     return output
                 end
-            end
-
-            module Base64
             end
 
             module TrueClass
