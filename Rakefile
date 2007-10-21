@@ -5,7 +5,7 @@ PACKAGE_EXCLUSIONS = [ "libxml-feed" ]
 packages = []
 
 FileList["./*"].each do |x|
-    x = x.sub(/^.\//, "")
+    x = x.sub(/^\.\//, "")
     packages.push x.to_sym unless PACKAGE_EXCLUSIONS.include? x
 end
 
