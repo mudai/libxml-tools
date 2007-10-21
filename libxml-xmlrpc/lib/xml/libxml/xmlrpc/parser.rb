@@ -129,7 +129,7 @@ module XML::XMLRPC
 
             parsed_params = Parser::ValueParser.parse(values)
 
-            return method, parsed_params
+            return methodname, parsed_params
         end
     end
 

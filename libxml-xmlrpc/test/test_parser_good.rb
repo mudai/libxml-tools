@@ -45,6 +45,8 @@ class TestParserGood < Test::Unit::TestCase
 
         assert_kind_of(Hash, xml[8])
         assert_equal({ :Monkeys => [xml[6], xml[5]], :Poo => xml[5]}, xml[8])
+
+        assert_equal("examples.getStateName", xml.method)
     end
 
     def test_response

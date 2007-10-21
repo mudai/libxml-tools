@@ -24,8 +24,8 @@ module XML
                 output = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n"
                 output += "<methodResponse>"
                 output += "<fault><value><struct>"
-                output += "<member><name>faultCode</name><value>#{faultCode}</value></member>"
-                output += "<member><name>faultString</name><value>#{faultMessage}</value></member>"
+                output += "<member><name>faultCode</name><value><int>#{faultCode}</int></value></member>"
+                output += "<member><name>faultString</name><value><string>#{faultMessage}</string></value></member>"
                 output += "</struct></value></fault>"
                 output += "</methodResponse>"
             end
@@ -115,6 +115,7 @@ module XML
                         output += Builder::Value.generate_value(args[key])
                         output += "</member>"
                     end
+                    output += "</struct>"
                     return output
                 end
             end
