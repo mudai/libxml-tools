@@ -36,6 +36,7 @@ module XML::XMLRPC
     #
     # Notes:
     #  * Structs and Arrays are Hashes and Arrays respectively.
+    #  * Base64 is auto-decoded.
     #  * Any interpreter-level (as opposed to syntax-level or exception
     #    handling) crash you see in ruby is the fault of libxml, not this code.
     #  * In a case where you're parsing a methodCall request, the method
@@ -142,7 +143,7 @@ module XML::XMLRPC
             node.each_child do |child_node|
                 case child_node.name.downcase
                 when 'fault'
-                    # RPC call has return an error - find the fault and GTFO
+                    # RPC call has returned an error - find the fault and GTFO
                     value = Parser::ValueParser.parse(node.find('/methodResponse/fault/value'))
                     raise RemoteCallError, value[0][:faultCode].to_s + ": " + value[0][:faultString]
                 when 'params'

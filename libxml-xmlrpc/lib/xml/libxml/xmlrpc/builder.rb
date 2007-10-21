@@ -1,3 +1,5 @@
+require 'base64'
+
 module XML
     module XMLRPC
         module Builder
@@ -38,6 +40,16 @@ module XML
         class Builder::Error < Exception
         end
 
+        class Builder::Base64
+            def initialize(str)
+                @string = str
+            end
+
+            def encode
+                ::Base64.encode64(@string)
+            end
+        end
+
         module Builder::Value
 
             def self.generate(*args)
@@ -57,7 +69,9 @@ module XML
 
                 # try the superclass if the class doesn't work (this isn't
                 # perfect but is better than nothing)
-                if const_get(arg.class.to_s).respond_to? :generate
+                if arg.class == Builder::Base64
+                    output += Base64.generate(arg)
+                elsif const_get(arg.class.to_s).respond_to? :generate
                     output += const_get(arg.class.to_s).generate(arg)
                 elsif const_get(arg.class.superclass.to_s).respond_to? :generate
                     output += const_get(arg.class.superclass.to_s).generate(arg)
@@ -68,6 +82,12 @@ module XML
                 output += "</value>"
 
                 return output
+            end
+
+            module Base64
+                def self.generate(arg)
+                    "<base64>#{arg.encode}</base64>"
+                end
             end
 
             module Fixnum
@@ -120,6 +140,9 @@ module XML
                 end
             end
 
+            module Base64
+            end
+
             module TrueClass
                 def self.generate(arg)
                     "<boolean>1</boolean>"
@@ -140,9 +163,4 @@ module XML
             end
         end
     end
-end
-
-if __FILE__ == $0
-    require 'date'
-    puts XML::XMLRPC::Builder.response([1,2,3])
 end
