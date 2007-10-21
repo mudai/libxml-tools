@@ -5,8 +5,8 @@ PACKAGE_EXCLUSIONS = [ "libxml-feed" ]
 packages = []
 
 FileList["./*"].each do |x|
-    x = x.sub(/^\.\//, "")
-    packages.push x.to_sym unless PACKAGE_EXCLUSIONS.include? x
+    next unless File.directory? x
+    packages.push File.basename(x).to_sym unless PACKAGE_EXCLUSIONS.include? File.basename(x)
 end
 
 packages.each do |package|
@@ -26,6 +26,10 @@ packages.each do |package|
 end
 
 task :default => [ "build-all" ]
+task :showpkgs do 
+    require 'pp'
+    pp packages
+end
 
 task "build-all" => packages
 task "test-all"  => packages.collect { |x| [x, "test"].join(":") }
