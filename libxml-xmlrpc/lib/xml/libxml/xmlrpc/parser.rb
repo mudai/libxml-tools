@@ -3,14 +3,6 @@ require 'base64'
 require 'date'
 require 'stringio'
 
-#
-# XML::XMLRPC -- LibXML interface to XML-RPC
-# 
-# Right now, look at XML::XMLRPC::Parser and XML::XMLRPC::Builder for docs
-#
-# Author:: Erik Hollensbe <erik@hollensbe.org>
-#
-
 module XML::XMLRPC
     class RemoteCallError < Exception
     end
