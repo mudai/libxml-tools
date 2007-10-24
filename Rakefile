@@ -25,13 +25,13 @@ packages.each do |package|
     end
 end
 
-task :default => [ "build-all" ]
+task :default => %w(test-all build-all)
 task :showpkgs do 
     require 'pp'
     pp packages
 end
 
-task "build-all" => packages
+task "build-all" => packages.collect { |x| [x, "default"].join(":") }
 task "test-all"  => packages.collect { |x| [x, "test"].join(":") }
 task "clean-all" => packages.collect { |x| [x, "clean"].join(":") }
 task "doc-all"   => packages.collect { |x| [x, "doc"].join(":") }

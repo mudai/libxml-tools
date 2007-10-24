@@ -48,6 +48,7 @@ spec = Gem::Specification.new do |s|
     s.summary = "Provides a alternative and faster XML-RPC layer through libxml's parsing framework"
     s.has_rdoc = true
     s.files = Dir["lib/**/*"] + Dir["test/*"]
+    s.add_dependency 'libxml-ruby'
     s.rubyforge_project = 'libxml-tools'
 end
 
