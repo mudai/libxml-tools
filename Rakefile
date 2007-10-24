@@ -1,37 +1,67 @@
-# if there are any packages that don't have the right targets or are simply
-# missing a rakefile, put them here.
-PACKAGE_EXCLUSIONS = [ "libxml-feed" ]
+# $Id$
+require 'rubygems'
+require 'rake/testtask'
+require 'rake/packagetask'
+require 'rake/gempackagetask'
+require 'rake/rdoctask'
+require 'lib/xml/libxml/xmlrpc'
 
-packages = []
+task :default => [ :test, :dist ]
 
-FileList["./*"].each do |x|
-    next unless File.directory? x
-    packages.push File.basename(x).to_sym unless PACKAGE_EXCLUSIONS.include? File.basename(x)
+#
+# Tests
+#
+
+Rake::TestTask.new do |t|
+    t.test_files = FileList['test/test*.rb']
+    t.verbose = true 
 end
 
-packages.each do |package|
-    namespace package do
-        task :default => [ :test, :rdoc, :package ]
-        task :clean   => [ :clobber_package, :clobber_rdoc ] 
-        task :distclean => [ :clean ]
+#
+# Distribution
+#
 
-        %w(package rdoc test clobber_package clobber_rdoc).each do |target|
-            task target.to_sym do
-                chdir package.to_s
-                sh "rake #{target}"
-                chdir ".."
-            end
-        end
-    end
+task :dist      => [:repackage, :gem, :rdoc]
+task :distclean => [:clobber_package, :clobber_rdoc]
+task :clean     => [:distclean]
+
+#
+# Documentation
+#
+
+Rake::RDocTask.new do |rd|
+    rd.rdoc_dir = "rdoc"
+    rd.rdoc_files.include("./lib/**/*.rb")
+#    rd.rdoc_files.include("./bin/**/*")
+    rd.options = %w(-ap)
 end
 
-task :default => %w(test-all build-all)
-task :showpkgs do 
-    require 'pp'
-    pp packages
+#
+# Packaging
+# 
+
+spec = Gem::Specification.new do |s|
+    s.name = "libxml-xmlrpc"
+    s.version = XML::XMLRPC::VERSION
+    s.author = "Erik Hollensbe"
+    s.email = "erik@hollensbe.org"
+    s.summary = "Provides a alternative and faster XML-RPC layer through libxml's parsing framework"
+    s.has_rdoc = true
+    s.files = Dir["lib/**/*"] + Dir["test/*"]
+    s.add_dependency 'libxml-ruby'
+    s.rubyforge_project = 'libxml-tools'
 end
 
-task "build-all" => packages.collect { |x| [x, "default"].join(":") }
-task "test-all"  => packages.collect { |x| [x, "test"].join(":") }
-task "clean-all" => packages.collect { |x| [x, "clean"].join(":") }
-task "doc-all"   => packages.collect { |x| [x, "doc"].join(":") }
+Rake::GemPackageTask.new(spec) do |s|
+end
+
+Rake::PackageTask.new(spec.name, spec.version) do |p|
+    p.need_tar_gz = true
+    p.need_zip = true
+    #p.package_files.include("./bin/**/*")
+    p.package_files.include("./Rakefile")
+    p.package_files.include("./setup.rb")
+    p.package_files.include("./lib/**/*.rb")
+    #p.package_files.include("README.rdoc")
+    p.package_files.include("./test/**/*")
+end
