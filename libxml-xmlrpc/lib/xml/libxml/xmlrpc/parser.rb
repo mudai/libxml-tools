@@ -1,3 +1,9 @@
+begin
+    require 'rubygems'
+    gem 'libxml-ruby', '= 0.3.8.4'
+rescue Exception => e
+end
+
 require 'xml/libxml'
 require 'base64'
 require 'date'

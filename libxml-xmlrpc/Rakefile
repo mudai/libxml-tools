@@ -1,10 +1,11 @@
 # $Id$
+$:.push 'lib'
 require 'rubygems'
 require 'rake/testtask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/rdoctask'
-require 'lib/xml/libxml/xmlrpc'
+require 'xml/libxml/xmlrpc'
 
 task :default => [ :test, :dist ]
 
@@ -13,6 +14,7 @@ task :default => [ :test, :dist ]
 #
 
 Rake::TestTask.new do |t|
+    t.libs << 'lib'
     t.test_files = FileList['test/test*.rb']
     t.verbose = true 
 end
@@ -48,7 +50,7 @@ spec = Gem::Specification.new do |s|
     s.summary = "Provides a alternative and faster XML-RPC layer through libxml's parsing framework"
     s.has_rdoc = true
     s.files = Dir["lib/**/*"] + Dir["test/*"]
-    s.add_dependency 'libxml-ruby'
+    s.add_dependency 'libxml-ruby', '= 0.3.8.4'
     s.rubyforge_project = 'libxml-tools'
 end
 
