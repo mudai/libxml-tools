@@ -24,10 +24,6 @@ class TestBuilder < Test::Unit::TestCase
              "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<methodCall><methodName>foo</methodName><params><param><value><dateTime.iso8601>19780406T00:00:00</dateTime.iso8601></value></param></params></methodCall>")
         assert_equal(@class.foo([1,2,3]), 
             "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<methodCall><methodName>foo</methodName><params><param><value><array><data><value><int>1</int></value><value><int>2</int></value><value><int>3</int></value></data></array></value></param></params></methodCall>")
-        assert_equal(@class.foo({:Bar => 1, :Foo => 2}), 
-            "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<methodCall><methodName>foo</methodName><params><param><value><struct><member><name>Bar</name><value><int>1</int></value></member><member><name>Foo</name><value><int>2</int></value></member></struct></value></param></params></methodCall>")
-        assert_equal(@class.foo(1, [1,2,3], {:Bar => 1, :Foo => 2}), 
-            "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<methodCall><methodName>foo</methodName><params><param><value><int>1</int></value></param><param><value><array><data><value><int>1</int></value><value><int>2</int></value><value><int>3</int></value></data></array></value></param><param><value><struct><member><name>Bar</name><value><int>1</int></value></member><member><name>Foo</name><value><int>2</int></value></member></struct></value></param></params></methodCall>")
         assert_equal(@class.foo(XML::XMLRPC::Builder::Base64.new("foo")),
              "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<methodCall><methodName>foo</methodName><params><param><value><base64>Zm9v\n</base64></value></param></params></methodCall>")
 

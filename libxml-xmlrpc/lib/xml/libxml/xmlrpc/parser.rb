@@ -29,7 +29,7 @@ module XML::XMLRPC
     #         </params>
     #     </methodResponse> 
     #
-    #   xml = XML::XMLRPC::Parser.new(IO or String object)
+    #   xml = XML::XMLRPC::Parser.new(IO, String, or StringIO object)
     #   xml[0] == "South Dakota"
     #
     # Notes:
@@ -77,6 +77,12 @@ module XML::XMLRPC
         # does this for you.
         #
         def parse!
+
+            if @string.empty?
+                raise ParserError, 
+                    "String is empty - libxml-ruby would normally crash your program here."
+            end
+
             document = XML::Parser.string(@string).parse
             node = document.root
             case node.name
