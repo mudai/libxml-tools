@@ -45,6 +45,8 @@ module XML::XMLRPC
 
         include Enumerable
 
+        attr :debug
+
         attr_reader :params
         attr_reader :method
 
@@ -62,6 +64,10 @@ module XML::XMLRPC
                 @string = io.read
             else
                 raise ParserError, "Argument to new must be String or IO"
+            end
+
+            if @debug
+                $stderr.puts "Parsing:\n#{@string}";
             end
 
             @params = []

@@ -35,7 +35,7 @@ module XML
             # fault response.
             #
             def call(methodName, *args)
-                res = @http.post(@url, XML::XMLRPC::Builder.call(methodName, *args))
+                res = @http.post(@url, XML::XMLRPC::Builder.call(methodName, *args), { "Content-type" => 'text/xml' })
                 res_args = XML::XMLRPC::Parser.new(res.body)
                 return res_args
             end

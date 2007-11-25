@@ -8,6 +8,22 @@ class TestBuilder < Test::Unit::TestCase
         @class = XML::XMLRPC::Builder
     end
 
+    def test_debug
+
+        assert(!@class.instance_variable_get("@debug"))
+
+        assert_nothing_raised do
+            @class.debug = true
+        end
+
+        assert(@class.instance_variable_get("@debug")) 
+
+        assert_nothing_raised do
+            @class.debug = false
+        end
+    end
+
+
     def test_call
         # ugh. these sure are ugly.
         assert_equal(@class.foo,

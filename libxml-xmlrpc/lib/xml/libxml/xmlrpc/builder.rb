@@ -30,7 +30,20 @@ module XML
         #    UTF-8 before passing them into this module.
         #
         module Builder
-            #
+
+
+            # toggles builder debugging
+            def self.debug=(x)
+                @debug = x 
+            end
+
+            # gets the debugging state
+            def self.debug
+                @debug
+            end
+            
+            self.debug = false
+
             # Builds the appropriate XML for a methodCall.
             # 
             # Takes a methodname and a series of arguments.
@@ -42,6 +55,8 @@ module XML
                 output += "<methodCall><methodName>#{methodname}</methodName>"
                 output += Value.generate(*args)
                 output += "</methodCall>"
+
+                self.debug_output output
 
                 return output
             end
@@ -55,6 +70,9 @@ module XML
                 output += Value.generate(*args)
                 output += "</methodResponse>"
 
+                self.debug_output output
+
+                return output
             end
 
             #
@@ -68,6 +86,10 @@ module XML
                 output += "<member><name>faultString</name><value><string>#{faultMessage}</string></value></member>"
                 output += "</struct></value></fault>"
                 output += "</methodResponse>"
+
+                self.debug_output output
+
+                return output
             end
 
             #
@@ -76,6 +98,14 @@ module XML
             #
             def self.method_missing(*args)
                 self.call(*args)
+            end
+
+            private  
+
+            def self.debug_output(output)
+                if @debug
+                    $stderr.puts "Building:\n#{output}"
+                end
             end
         end
 
