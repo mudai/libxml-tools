@@ -19,6 +19,20 @@ class TestParserGood < Test::Unit::TestCase
         end
     end
 
+    def test_debug
+        assert(!XML::XMLRPC::Parser.debug)
+
+        assert_nothing_raised do
+            XML::XMLRPC::Parser.debug = true
+        end
+
+        assert(XML::XMLRPC::Parser.debug)
+
+        assert_nothing_raised do
+            XML::XMLRPC::Parser.debug = false
+        end
+    end
+
     def test_datatypes
         xml = nil
 

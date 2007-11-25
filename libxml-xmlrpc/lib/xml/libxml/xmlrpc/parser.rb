@@ -45,7 +45,17 @@ module XML::XMLRPC
 
         include Enumerable
 
-        attr :debug
+        # set the debugging state
+        def self.debug=(x)
+            @debug = x
+        end
+
+        # get the debugging state
+        def self.debug
+            @debug
+        end
+
+        self.debug = false
 
         attr_reader :params
         attr_reader :method
@@ -66,7 +76,7 @@ module XML::XMLRPC
                 raise ParserError, "Argument to new must be String or IO"
             end
 
-            if @debug
+            if self.class.debug
                 $stderr.puts "Parsing:\n#{@string}";
             end
 
