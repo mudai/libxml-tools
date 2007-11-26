@@ -9,6 +9,17 @@ module XML
         # It will not handle redirection.
         #
         class Client
+
+            # set the debug state
+            def self.debug=(x)
+                @debug = x
+            end
+
+            # get the debug state
+            def self.debug
+                @debug
+            end
+
             #
             # Given an unused Net::HTTP object and a relative URL, it will post
             # the XML-RPC information to this form after calling a method with
@@ -35,6 +46,9 @@ module XML
             # fault response.
             #
             def call(methodName, *args)
+                XML::XMLRPC::Builder.debug = self.class.debug
+                XML::XMLRPC::Parser.debug = self.class.debug
+
                 res = @http.post(@url, XML::XMLRPC::Builder.call(methodName, *args), { "Content-type" => 'text/xml' })
                 res_args = XML::XMLRPC::Parser.new(res.body)
                 return res_args
