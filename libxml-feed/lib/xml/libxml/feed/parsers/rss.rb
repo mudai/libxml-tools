@@ -1,3 +1,5 @@
+require 'stringio'
+
 module XML
     module Feed
         module Parser
