@@ -5,7 +5,7 @@ require 'rake/testtask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/rdoctask'
-require 'xml/libxml/xmlrpc'
+require 'xml/libxml/feed'
 
 task :default => [ :test, :dist ]
 
@@ -47,7 +47,7 @@ spec = Gem::Specification.new do |s|
     s.version = XML::Feed::VERSION
     s.author = "Erik Hollensbe"
     s.email = "erik@hollensbe.org"
-    s.summary = "Provides a alternative and faster feed parsing layer through libxml's parsing framework"
+    s.summary = "Provides a alternative and faster feed (RSS, Atom, et al) parsing layer through libxml's parsing framework"
     s.has_rdoc = true
     s.files = Dir["lib/**/*"] + Dir["test/*"]
     s.add_dependency 'libxml-ruby'
