@@ -1,6 +1,6 @@
 begin
     require 'rubygems'
-    gem 'libxml-ruby', '= 0.3.8.4'
+    gem 'libxml-ruby'
 rescue Exception => e
 end
 
@@ -141,8 +141,8 @@ module XML::XMLRPC
         def self.parse(node)
             method = node.find('/methodCall/methodName')
             methodname = "unknown"
-            if method and method[0]
-                content = method[0].content
+            if method and method.to_a[0]
+                content = method.to_a[0].content
                 methodname = content
             end
 
@@ -165,7 +165,7 @@ module XML::XMLRPC
                 when 'fault'
                     # RPC call has returned an error - find the fault and GTFO
                     value = Parser::ValueParser.parse(node.find('/methodResponse/fault/value'))
-                    raise RemoteCallError, value[0][:faultCode].to_s + ": " + value[0][:faultString]
+                    raise RemoteCallError, value.to_a[0][:faultCode].to_s + ": " + value[0][:faultString]
                 when 'params'
                     return Parser::ValueParser.parse(node.find('/methodResponse/params/param/value'))
                 end

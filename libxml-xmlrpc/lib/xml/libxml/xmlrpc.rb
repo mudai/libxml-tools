@@ -1,6 +1,6 @@
 begin
     require 'rubygems'
-    gem 'libxml-ruby', '= 0.3.8.4'
+    gem 'libxml-ruby'
     require 'xml/libxml'
 rescue Exception => e
 end
@@ -20,6 +20,6 @@ module XML
     #
 
     module XMLRPC
-        VERSION = "0.1.3"
+        VERSION = "0.1.4"
     end
 end
