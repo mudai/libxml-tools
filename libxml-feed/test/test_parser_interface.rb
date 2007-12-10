@@ -30,4 +30,29 @@ class TestParserInterface < Test::Unit::TestCase
             XML::Feed::Parser.rss('2.0', Array.new, false)
         end
     end
+
+    def test_base_accessors
+        parser = nil
+
+        assert_nothing_raised do
+            parser = XML::Feed::Parser.rss('2.0', 'asdf', false)
+        end
+
+        assert_equal(parser.xml, 'asdf')
+        assert_equal(parser.version, '2.0')
+
+        assert_nothing_raised do
+            parser = XML::Feed::Parser.rss('1.0', File.open('test/data/cruft', 'r'), false)
+        end
+
+        assert_equal(parser.xml, "this is cruft\n")
+        assert_equal(parser.version, '1.0')
+        
+        assert_nothing_raised do
+            parser = XML::Feed::Parser.rss('2.0', StringIO.new('asdf'), false)
+        end
+
+        assert_equal(parser.xml, 'asdf')
+        assert_equal(parser.version, '2.0')
+    end
 end
