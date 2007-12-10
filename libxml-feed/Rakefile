@@ -1,0 +1,69 @@
+# $Id$
+$:.push 'lib'
+require 'rubygems'
+require 'rake/testtask'
+require 'rake/packagetask'
+require 'rake/gempackagetask'
+require 'rake/rdoctask'
+require 'xml/libxml/xmlrpc'
+
+task :default => [ :test, :dist ]
+
+#
+# Tests
+#
+
+Rake::TestTask.new do |t|
+    t.libs << 'lib'
+    t.test_files = FileList['test/test*.rb']
+    t.verbose = true 
+end
+
+#
+# Distribution
+#
+
+task :dist      => [:repackage, :gem, :rdoc]
+task :distclean => [:clobber_package, :clobber_rdoc]
+task :clean     => [:distclean]
+
+#
+# Documentation
+#
+
+Rake::RDocTask.new do |rd|
+    rd.rdoc_dir = "rdoc"
+    rd.rdoc_files.include("./lib/**/*.rb")
+#    rd.rdoc_files.include("./bin/**/*")
+    rd.options = %w(-ap)
+end
+
+#
+# Packaging
+# 
+
+spec = Gem::Specification.new do |s|
+    s.name = "libxml-feed"
+    s.version = XML::Feed::VERSION
+    s.author = "Erik Hollensbe"
+    s.email = "erik@hollensbe.org"
+    s.summary = "Provides a alternative and faster feed parsing layer through libxml's parsing framework"
+    s.has_rdoc = true
+    s.files = Dir["lib/**/*"] + Dir["test/*"]
+    s.add_dependency 'libxml-ruby'
+    s.rubyforge_project = 'libxml-tools'
+end
+
+Rake::GemPackageTask.new(spec) do |s|
+end
+
+Rake::PackageTask.new(spec.name, spec.version) do |p|
+    p.need_tar_gz = true
+    p.need_zip = true
+    #p.package_files.include("./bin/**/*")
+    p.package_files.include("./Rakefile")
+    p.package_files.include("./setup.rb")
+    p.package_files.include("./lib/**/*.rb")
+    #p.package_files.include("README.rdoc")
+    p.package_files.include("./test/**/*")
+end
