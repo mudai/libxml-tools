@@ -78,5 +78,10 @@ class TestParserInterface < Test::Unit::TestCase
         assert_raise(XML::Feed::Parser::ValidationError) do
             XML::Feed::Parser.rss('2.0', File.open('test/data/bad-pubdate-2.0-rss.xml'), true)
         end
+        
+        # bad ttl
+        assert_raise(XML::Feed::Parser::ValidationError) do
+            XML::Feed::Parser.rss('2.0', File.open('test/data/bad-ttl-2.0-rss.xml'), true)
+        end
     end
 end
