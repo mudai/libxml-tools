@@ -68,5 +68,15 @@ class TestParserInterface < Test::Unit::TestCase
         assert_raise(XML::Feed::Parser::ValidationError) do
             XML::Feed::Parser.rss('2.0', File.open('test/data/duplicate-channel-description-2.0-rss.xml'), true)
         end
+        
+        # bad URI
+        assert_raise(XML::Feed::Parser::ValidationError) do
+            XML::Feed::Parser.rss('2.0', File.open('test/data/bad-uri-2.0-rss.xml'), true)
+        end
+        
+        # bad pubDate
+        assert_raise(XML::Feed::Parser::ValidationError) do
+            XML::Feed::Parser.rss('2.0', File.open('test/data/bad-pubdate-2.0-rss.xml'), true)
+        end
     end
 end
