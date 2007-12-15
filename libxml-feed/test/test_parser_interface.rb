@@ -54,5 +54,14 @@ class TestParserInterface < Test::Unit::TestCase
 
         assert_equal(parser.xml, 'asdf')
         assert_equal(parser.version, '2.0')
+        assert(!parser.parsed)
+
+        assert_nothing_raised do
+            parser = XML::Feed::Parser.rss('2.0', File.open('test/data/basic.xml', 'r'), true)
+        end
+
+        assert(parser.parsed)
+        assert(parser.ast)
+        assert_kind_of(XML::Feed::Parser::AST, parser.ast)
     end
 end

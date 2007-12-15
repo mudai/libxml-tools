@@ -12,8 +12,10 @@ module XML
             class Base 
                 attr_reader :xml
                 attr_reader :version
+                attr_reader :ast
+                attr_reader :parsed
 
-                def initialize(version, io, auto_parse)
+                def initialize(version, io, auto_parse=true)
                     @version = version
 
                     case io
@@ -31,7 +33,19 @@ module XML
 
                     @xml.freeze
                     @version.freeze
+
+                    if auto_parse
+                        @parsed = true
+                        @ast    = parse
+                        @ast.freeze
+                    else
+                        @parsed = false
+                        @ast    = nil
+                    end
                 end
+            end
+
+            class AST
             end
         end
     end

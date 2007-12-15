@@ -7,6 +7,10 @@ module XML
                 def initialize(version, io, auto_parse=true)
                     super
                 end
+
+                def parse
+                    return XML::Feed::Parser::AST.new
+                end
             end
         end
     end
