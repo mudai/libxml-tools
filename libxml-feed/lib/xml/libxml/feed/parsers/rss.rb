@@ -9,7 +9,7 @@ module XML
                 end
 
                 def parse
-                    return XML::Feed::Parser::AST.new
+                    return XML::Feed::Parser::AST.new("test")
                 end
             end
         end
