@@ -14,7 +14,7 @@ module XML
                         validation_error "Document Root is not named 'rss'"    unless @doc.root.name.downcase == "rss"
                         validation_error "Document Version does not exist"     unless @doc.root["version"]
                         validation_error "Document Version is not '2.0'"       unless @doc.root["version"] == "2.0"
-                        validation_error "Channel element does not exist"      if @doc.find('/rss/channel').length == 0
+                        validation_error "Channel elements do not exist"      if @doc.find('/rss/channel').length == 0
                     else
                         validation_error "Validating RSS version #{@version} is not supported (yet!)"
                     end
