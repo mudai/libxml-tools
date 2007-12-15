@@ -61,10 +61,10 @@ class TestParserInterface < Test::Unit::TestCase
         assert(!parser.validated)
 
         assert_nothing_raised do
-            parser = XML::Feed::Parser.rss('2.0', File.open('test/data/basic.xml', 'r'), true)
+            parser = XML::Feed::Parser.rss('2.0', File.open('test/data/valid-2.0-rss.xml', 'r'), true)
         end
 
-        assert_equal(File.open('test/data/basic.xml').read, parser.xml)
+        assert_equal(File.open('test/data/valid-2.0-rss.xml').read, parser.xml)
         assert_equal('2.0', parser.version)
         assert(parser.validated)
     end

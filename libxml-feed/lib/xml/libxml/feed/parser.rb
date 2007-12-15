@@ -9,6 +9,9 @@ module XML
             class InvalidHandle < Exception
             end
 
+            class ValidationError < Exception
+            end
+
             class Base 
                 attr_reader :xml
                 attr_reader :version
@@ -44,6 +47,12 @@ module XML
                     if auto_validate 
                         validate!
                     end
+                end
+
+                protected 
+
+                def validation_error(error_string)
+                    raise ValidationError, error_string
                 end
             end
         end
