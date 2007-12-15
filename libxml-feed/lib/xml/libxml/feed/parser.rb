@@ -12,10 +12,10 @@ module XML
             class Base 
                 attr_reader :xml
                 attr_reader :version
-                attr_reader :ast
-                attr_reader :parsed
+                attr_reader :validated
+                attr_reader :doc
 
-                def initialize(version, io, auto_parse=true)
+                def initialize(version, io, auto_validate=true)
                     @version = version
 
                     case io
@@ -33,14 +33,16 @@ module XML
 
                     @xml.freeze
                     @version.freeze
+                    @validated = false
 
-                    if auto_parse
-                        @parsed = true
-                        @ast    = parse
-                        @ast.freeze
-                    else
-                        @parsed = false
-                        @ast    = nil
+                    if @xml.length == 0
+                        raise XML::Feed::Parser::InvalidHandle, "Resulting XML String must have a length greater than 0"
+                    end
+
+                    @doc = XML::Parser.string(@xml).parse
+
+                    if auto_validate 
+                        validate!
                     end
                 end
             end

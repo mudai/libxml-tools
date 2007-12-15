@@ -6,7 +6,7 @@ class TestParserInterface < Test::Unit::TestCase
     def test_loader
         parser = nil
         assert_nothing_raised do 
-            parser = XML::Feed::Parser.rss('2.0', "", false)
+            parser = XML::Feed::Parser.rss('2.0', "<rss></rss>", false)
         end
 
         assert_instance_of(XML::Feed::Parser::Rss, parser)
@@ -15,19 +15,23 @@ class TestParserInterface < Test::Unit::TestCase
     # tests various forms of IO that can be passed to the constructors for the default parsers
     def test_IO_acceptance
         assert_nothing_raised do
-            XML::Feed::Parser.rss('2.0', '', false)
+            XML::Feed::Parser.rss('2.0', '<rss></rss>', false)
         end
 
         assert_nothing_raised do
-            XML::Feed::Parser.rss('2.0', File.open('/dev/null', 'r'), false)
+            XML::Feed::Parser.rss('2.0', File.open('test/data/basic.xml', 'r'), false)
         end
 
         assert_nothing_raised do
-            XML::Feed::Parser.rss('2.0', StringIO.new(""), false)
+            XML::Feed::Parser.rss('2.0', StringIO.new("<rss></rss>"), false)
         end
 
         assert_raise(XML::Feed::Parser::InvalidHandle) do
             XML::Feed::Parser.rss('2.0', Array.new, false)
+        end
+
+        assert_raise(XML::Feed::Parser::InvalidHandle) do
+            XML::Feed::Parser.rss('2.0', '', false)
         end
     end
 
@@ -35,35 +39,33 @@ class TestParserInterface < Test::Unit::TestCase
         parser = nil
 
         assert_nothing_raised do
-            parser = XML::Feed::Parser.rss('2.0', 'asdf', false)
+            parser = XML::Feed::Parser.rss('2.0', '<rss></rss>', false)
         end
 
-        assert_equal(parser.xml, 'asdf')
-        assert_equal(parser.version, '2.0')
+        assert_equal('<rss></rss>', parser.xml)
+        assert_equal('2.0', parser.version)
 
         assert_nothing_raised do
-            parser = XML::Feed::Parser.rss('1.0', File.open('test/data/cruft', 'r'), false)
+            parser = XML::Feed::Parser.rss('1.0', File.open('test/data/basic.xml', 'r'), false)
         end
 
-        assert_equal(parser.xml, "this is cruft\n")
-        assert_equal(parser.version, '1.0')
+        assert_equal(File.open('test/data/basic.xml').read, parser.xml)
+        assert_equal('1.0', parser.version)
         
         assert_nothing_raised do
-            parser = XML::Feed::Parser.rss('2.0', StringIO.new('asdf'), false)
+            parser = XML::Feed::Parser.rss('2.0', StringIO.new('<rss></rss>'), false)
         end
 
-        assert_equal(parser.xml, 'asdf')
-        assert_equal(parser.version, '2.0')
-        assert(!parser.parsed)
+        assert_equal('<rss></rss>', parser.xml)
+        assert_equal('2.0', parser.version)
+        assert(!parser.validated)
 
         assert_nothing_raised do
             parser = XML::Feed::Parser.rss('2.0', File.open('test/data/basic.xml', 'r'), true)
         end
 
-        assert_equal(parser.xml, "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<rss>\n</rss>\n")
-        assert_equal(parser.version, '2.0')
-        assert(parser.parsed)
-        assert(parser.ast)
-        assert_kind_of(XML::Feed::Parser::AST, parser.ast)
+        assert_equal(File.open('test/data/basic.xml').read, parser.xml)
+        assert_equal('2.0', parser.version)
+        assert(parser.validated)
     end
 end
