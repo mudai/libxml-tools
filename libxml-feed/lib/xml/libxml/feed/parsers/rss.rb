@@ -49,13 +49,13 @@ module XML
                     end
 
                     %w(link docs).each do |uri|
-                        validate_xpath("/rss/channel/#{uri}", "Channel #{uri} does not parse") do |x|
+                        validate_xpath("/rss/channel/#{uri}", "Channel #{uri} does not parse as a URI") do |x|
                             URI.parse(x)
                         end
                     end
 
                     %w(pubDate lastBuildDate).each do |t|
-                        validate_xpath("/rss/channel/#{t}", "Channel #{t} does not parse") do |x|
+                        validate_xpath("/rss/channel/#{t}", "Channel #{t} does not parse as a rfc822 time") do |x|
                             Time.rfc2822(x)
                         end
                     end
