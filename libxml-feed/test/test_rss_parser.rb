@@ -9,12 +9,41 @@ class TestValidation < Test::Unit::TestCase
         assert_nothing_raised do
             parser = XML::Feed::Parser.rss('2.0', File.open('test/data/valid-2.0-rss.xml'), true)
         end
-
+        
+        assert(parser.channel)
         assert_kind_of(Array, parser.channel)
         assert_kind_of(XML::Feed::Parser::Rss::Channel, parser.channel[0])
 
+        assert(parser.channel[0].pubDate)
+        assert_kind_of(Time, parser.channel[0].pubDate)
+
+        assert(parser.channel[0].lastBuildDate)
+        assert_kind_of(Time, parser.channel[0].lastBuildDate)
+
+        assert(parser.channel[0].link)
+        assert_kind_of(URI, parser.channel[0].link)
+
+        assert(parser.channel[0].docs)
+        assert_kind_of(URI, parser.channel[0].docs)
+
+        assert(parser.channel[0].ttl)
+        assert_kind_of(Numeric, parser.channel[0].ttl)
+
+        assert(parser.channel[0].item)
         assert_kind_of(Array, parser.channel[0].item)
-        assert_kind_of(XML::Feed::Parser::Rss::Item, parser.channel[0].item[0])
+
+        parser.channel[0].item.each do |item|
+            assert_kind_of(XML::Feed::Parser::Rss::Item, item)
+            if item.link
+                assert_kind_of(URI, item.link)
+            end
+            if item.description
+                assert_kind_of(String, item.description)
+            end
+            if item.title
+                assert_kind_of(String, item.title)
+            end
+        end
     end
 
     def test_validate_rss
