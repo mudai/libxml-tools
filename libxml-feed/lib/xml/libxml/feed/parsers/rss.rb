@@ -54,8 +54,10 @@ module XML
                         end
                     end
 
-                    validate_xpath('/rss/channel/pubDate', 'Channel pubDate does not parse') do |x|
-                        Time.rfc2822(x)
+                    %w(pubDate lastBuildDate).each do |t|
+                        validate_xpath("/rss/channel/#{t}", "Channel #{t} does not parse") do |x|
+                            Time.rfc2822(x)
+                        end
                     end
 
                     validate_xpath('/rss/channel/ttl', 'Channel ttl is not an integer') do |x|
