@@ -1,5 +1,3 @@
-require 'stringio'
-
 module XML
     module Feed
         module Parser
@@ -21,8 +19,8 @@ module XML
 
                 protected
 
-                def validate_xpath(xpath, error_message, &block)
-                    node = @doc.find(xpath)
+                def validate_xpath(node, xpath, error_message, &block)
+                    node = node.find(xpath)
 
                     if node and node.first
                         begin 
@@ -42,30 +40,34 @@ module XML
                     validation_error "Channel elements do not exist"       if @doc.find('/rss/channel').length == 0
 
                     @doc.find('/rss/channel').each_with_index do |node, i|
-                            %w(title link description).each do |x|
-                                validation_error "Channel node #{i} does not have a #{x} element"   unless node.find('./' + x).length > 0
-                                validation_error "Channel node #{i} has more than one #{x} element" if node.find('./' + x).length > 1
+                        %w(title link description).each do |x|
+                            validation_error "Channel node #{i} does not have a #{x} element"   unless node.find('./' + x).length > 0
+                            validation_error "Channel node #{i} has more than one #{x} element" if node.find('./' + x).length > 1
+                        end
+                        %w(link docs).each do |uri|
+                            validate_xpath(node, "./#{uri}", "Channel #{i} element #{uri} does not parse as a URI") do |x|
+                                URI.parse(x)
                             end
-                    end
-
-                    %w(link docs).each do |uri|
-                        validate_xpath("/rss/channel/#{uri}", "Channel #{uri} does not parse as a URI") do |x|
-                            URI.parse(x)
                         end
-                    end
-
-                    %w(pubDate lastBuildDate).each do |t|
-                        validate_xpath("/rss/channel/#{t}", "Channel #{t} does not parse as a rfc822 time") do |x|
-                            Time.rfc2822(x)
+                        %w(pubDate lastBuildDate).each do |t|
+                            validate_xpath(node, "./#{t}", "Channel #{i} element #{t} does not parse as a rfc822 time") do |x|
+                                Time.rfc2822(x)
+                            end
                         end
-                    end
-
-                    validate_xpath('/rss/channel/ttl', 'Channel ttl is not an integer') do |x|
-                        x.to_i.to_s == x
-                    end
-
-                    if @doc.find('/rss/channel/cloud')
-                        warn "Cloud support is currently not implemented"
+                        validate_xpath(node, './ttl', 'Channel #{i} element ttl is not an integer') do |x|
+                            x.to_i.to_s == x
+                        end
+                        if node.find('./cloud')
+                            warn "Cloud support is currently not implemented"
+                        end
+                        if image = node.find('./image')
+                            %w(url link).each do |ele|
+                                validate_xpath(node, "./image/#{ele}", "Channel #{i} element image/#{ele} does not parse as a URI") do |x|
+                                    URI.parse(x)
+                                end
+                            end
+                            validation_error "Title element must exist in Channel #{i} element image" unless node.find('./title').length > 0
+                        end
                     end
                 end
             end

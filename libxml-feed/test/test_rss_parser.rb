@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'xml/libxml/feed'
 
-class TestParserInterface < Test::Unit::TestCase
+class TestValidation < Test::Unit::TestCase
 
     def test_validate_rss
         assert_raise(XML::Feed::Parser::ValidationError) do
@@ -82,6 +82,11 @@ class TestParserInterface < Test::Unit::TestCase
         # bad ttl
         assert_raise(XML::Feed::Parser::ValidationError) do
             XML::Feed::Parser.rss('2.0', File.open('test/data/bad-ttl-2.0-rss.xml'), true)
+        end
+
+        # bad image 
+        assert_raise(XML::Feed::Parser::ValidationError) do
+            XML::Feed::Parser.rss('2.0', File.open('test/data/bad-image-2.0-rss.xml'), true)
         end
     end
 end
