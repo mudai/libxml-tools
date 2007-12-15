@@ -3,6 +3,20 @@ require 'xml/libxml/feed'
 
 class TestValidation < Test::Unit::TestCase
 
+    def test_rss_interface
+        parser = nil
+
+        assert_nothing_raised do
+            parser = XML::Feed::Parser.rss('2.0', File.open('test/data/valid-2.0-rss.xml'), true)
+        end
+
+        assert_kind_of(Array, parser.channel)
+        assert_kind_of(XML::Feed::Parser::Rss::Channel, parser.channel[0])
+
+        assert_kind_of(Array, parser.channel[0].item)
+        assert_kind_of(XML::Feed::Parser::Rss::Item, parser.channel[0].item[0])
+    end
+
     def test_validate_rss
         assert_raise(XML::Feed::Parser::ValidationError) do
             XML::Feed::Parser.rss('1.0', File.open('test/data/valid-2.0-rss.xml'), true)

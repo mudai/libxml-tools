@@ -2,6 +2,9 @@ module XML
     module Feed
         module Parser
             class Rss < XML::Feed::Parser::Base
+                require 'xml/libxml/feed/parsers/rss/channel'
+                require 'xml/libxml/feed/parsers/rss/item'
+
                 def initialize(version, io, auto_validate=true)
                     super
                 end
@@ -17,8 +20,22 @@ module XML
                     @validated = true
                 end
 
+                def channel
+                    channels = []
+                    @doc.find('/rss/channel').each do |x|
+                        channels.push(Channel.new(x))
+                    end
+
+                    return channels
+                end
+
                 protected
 
+                #
+                # Given a node, an xpath expression to apply to that node, the
+                # error_message is thrown via validation_error() if the block
+                # evaluates to a false value or it raises an exception itself.
+                #
                 def validate_xpath(node, xpath, error_message, &block)
                     node = node.find(xpath)
 
