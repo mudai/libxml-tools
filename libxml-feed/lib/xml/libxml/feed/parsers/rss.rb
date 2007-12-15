@@ -22,10 +22,12 @@ module XML
                 def validate_xpath(node, xpath, error_message, &block)
                     node = node.find(xpath)
 
+                    result = true
+
                     if node and node.first
                         begin 
                             result = yield node.first.content
-                        rescue Exception
+                        rescue Exception => e
                             validation_error error_message
                         end
                     end
@@ -34,10 +36,10 @@ module XML
                 end
 
                 def validate_20
-                    validation_error "Document Root is not named 'rss'"    unless @doc.root.name.downcase == "rss"
-                    validation_error "Document Version does not exist"     unless @doc.root["version"]
-                    validation_error "Document Version is not '2.0'"       unless @doc.root["version"] == "2.0"
-                    validation_error "Channel elements do not exist"       if @doc.find('/rss/channel').length == 0
+                    validation_error "Document Root is not named 'rss'" unless @doc.root.name.downcase == "rss"
+                    validation_error "Document Version does not exist"  unless @doc.root["version"]
+                    validation_error "Document Version is not '2.0'"    unless @doc.root["version"] == "2.0"
+                    validation_error "Channel elements do not exist"    if     @doc.find('/rss/channel').length == 0
 
                     @doc.find('/rss/channel').each_with_index do |node, i|
                         %w(title link description).each do |x|
@@ -69,8 +71,14 @@ module XML
                             validation_error "Title element must exist in Channel #{i} element image" unless node.find('./title').length > 0
                         end
                         if items = node.find('./item')
-                            items.each do |item|
+                            items.each_with_index do |item, item_i|
                                 validation_error "Item must contain a title or description" unless item.find('./title').first or item.find('./description').first
+                                validate_xpath(item, './pubDate', "Channel #{i} item #{item_i} element pubDate does not parse as a rfc822 time") do |x|
+                                    Time.rfc2822(x)
+                                end
+                                validate_xpath(item, './link', "Channel #{i} item #{item_i} element link does not parse as a URI") do |x|
+                                    URI.parse(x)
+                                end
                             end
                         end
                     end
