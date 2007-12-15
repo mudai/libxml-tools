@@ -63,6 +63,10 @@ module XML
                     validate_xpath('/rss/channel/ttl', 'Channel ttl is not an integer') do |x|
                         x.to_i.to_s == x
                     end
+
+                    if @doc.find('/rss/channel/cloud')
+                        warn "Cloud support is currently not implemented"
+                    end
                 end
             end
         end
