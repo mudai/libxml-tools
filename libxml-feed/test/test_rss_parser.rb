@@ -88,5 +88,10 @@ class TestValidation < Test::Unit::TestCase
         assert_raise(XML::Feed::Parser::ValidationError) do
             XML::Feed::Parser.rss('2.0', File.open('test/data/bad-image-2.0-rss.xml'), true)
         end
+       
+        # bad item
+        assert_raise(XML::Feed::Parser::ValidationError) do
+            XML::Feed::Parser.rss('2.0', File.open('test/data/bad-item-2.0-rss.xml'), true)
+        end
     end
 end

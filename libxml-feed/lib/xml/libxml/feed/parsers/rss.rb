@@ -68,6 +68,11 @@ module XML
                             end
                             validation_error "Title element must exist in Channel #{i} element image" unless node.find('./title').length > 0
                         end
+                        if items = node.find('./item')
+                            items.each do |item|
+                                validation_error "Item must contain a title or description" unless item.find('./title').first or item.find('./description').first
+                            end
+                        end
                     end
                 end
             end
