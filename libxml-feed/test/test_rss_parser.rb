@@ -2,8 +2,7 @@ require 'test/unit'
 require 'xml/libxml/feed'
 
 class TestParserInterface < Test::Unit::TestCase
-    def test_validate
-
+    def test_validate_rss_20
         assert_raise(XML::Feed::Parser::ValidationError) do
             XML::Feed::Parser.rss('1.0', File.open('test/data/valid-2.0-rss.xml'), true)
         end
