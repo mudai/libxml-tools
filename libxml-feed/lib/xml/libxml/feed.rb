@@ -6,6 +6,7 @@ end
 
 require 'xml/libxml'
 require 'xml/libxml/feed/parser'
+require 'xml/libxml/feed/builder'
 
 module XML
     module Feed
