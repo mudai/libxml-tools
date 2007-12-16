@@ -15,19 +15,29 @@ class TestValidation < Test::Unit::TestCase
         assert_kind_of(XML::Feed::Parser::Rss::Channel, parser.channel[0])
 
         assert(parser.channel[0].pubDate)
-        assert_kind_of(Time, parser.channel[0].pubDate)
+        assert_kind_of(XML::Feed::Parser::Tag, parser.channel[0].pubDate)
+        assert_kind_of(Time, parser.channel[0].pubDate.data)
+        assert_kind_of(Hash, parser.channel[0].pubDate.property)
 
         assert(parser.channel[0].lastBuildDate)
-        assert_kind_of(Time, parser.channel[0].lastBuildDate)
+        assert_kind_of(XML::Feed::Parser::Tag, parser.channel[0].lastBuildDate)
+        assert_kind_of(Time, parser.channel[0].lastBuildDate.data)
+        assert_kind_of(Hash, parser.channel[0].lastBuildDate.property)
 
         assert(parser.channel[0].link)
-        assert_kind_of(URI, parser.channel[0].link)
+        assert_kind_of(XML::Feed::Parser::Tag, parser.channel[0].link)
+        assert_kind_of(URI, parser.channel[0].link.data)
+        assert_kind_of(Hash, parser.channel[0].link.property)
 
         assert(parser.channel[0].docs)
-        assert_kind_of(URI, parser.channel[0].docs)
+        assert_kind_of(XML::Feed::Parser::Tag, parser.channel[0].docs)
+        assert_kind_of(URI, parser.channel[0].docs.data)
+        assert_kind_of(Hash, parser.channel[0].docs.property)
 
         assert(parser.channel[0].ttl)
-        assert_kind_of(Numeric, parser.channel[0].ttl)
+        assert_kind_of(XML::Feed::Parser::Tag, parser.channel[0].ttl)
+        assert_kind_of(Numeric, parser.channel[0].ttl.data)
+        assert_kind_of(Hash, parser.channel[0].ttl.property)
 
         assert(parser.channel[0].item)
         assert_kind_of(Array, parser.channel[0].item)
@@ -35,13 +45,19 @@ class TestValidation < Test::Unit::TestCase
         parser.channel[0].item.each do |item|
             assert_kind_of(XML::Feed::Parser::Rss::Item, item)
             if item.link
-                assert_kind_of(URI, item.link)
+                assert_kind_of(XML::Feed::Parser::Tag, item.link)
+                assert_kind_of(URI, item.link.data)
+                assert_kind_of(Hash, item.link.property)
             end
             if item.description
-                assert_kind_of(String, item.description)
+                assert_kind_of(XML::Feed::Parser::Tag, item.description)
+                assert_kind_of(String, item.description.data)
+                assert_kind_of(Hash, item.description.property)
             end
             if item.title
-                assert_kind_of(String, item.title)
+                assert_kind_of(XML::Feed::Parser::Tag, item.title)
+                assert_kind_of(String, item.title.data)
+                assert_kind_of(Hash, item.title.property)
             end
         end
     end

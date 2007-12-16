@@ -11,6 +11,31 @@ module XML
 
             class ValidationError < Exception
             end
+            
+            class Tag
+                attr_reader :property
+                attr_reader :data
+
+                def initialize(name, data, properties)
+                    if properties
+                        @property = properties.to_h.dup 
+                    else
+                        @property = { }
+                    end
+
+                    if data
+                        @data = data
+                    else
+                        @data = ""
+                    end
+
+                    @name = name.dup
+                end
+
+                def to_s
+                    @data.to_s
+                end
+            end
 
             class Base 
                 attr_reader :xml

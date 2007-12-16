@@ -6,22 +6,24 @@ module XML::Feed::Parser::Rss::Common
     end
 
     def method_missing(methId, *args)
-        requested = node.find("./#{methId.to_s}")
+        requested = @node.find("./#{methId.to_s}")
         if requested.first
             if requested.length > 1
                 array = []
                 requested.each do |x|
-                    array.push type_node(x)
+                    array.push XML::Feed::Parser::Tag.new(x.name, type_node(x), x.properties)
                 end
 
                 return array
             else
-                return type_node(requested.first)
+                r = requested.first
+                return XML::Feed::Parser::Tag.new(r.name, type_node(r), r.properties)
             end
         end
 
         return nil
     end
+
     protected
 
     def type_node(node)
