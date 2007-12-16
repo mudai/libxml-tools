@@ -96,7 +96,7 @@ module XML
                         x.to_i.to_s == x
                     end
                     if node.find('./cloud')
-                        warn "Cloud support is currently not implemented"
+                        #warn "Cloud support is currently not implemented"
                     end
                     if image = node.find('./image')
                         %w(url link).each do |ele|
