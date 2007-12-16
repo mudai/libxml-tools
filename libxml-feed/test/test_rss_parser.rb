@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'xml/libxml/feed'
 
-class TestValidation < Test::Unit::TestCase
+class TestRssParser < Test::Unit::TestCase
 
     def test_rss_interface
         parser = nil
