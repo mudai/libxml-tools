@@ -17,11 +17,10 @@ class XML::Feed::Builder::Rss
     protected
 
     def build_document
-        @doc = XML::Document.new
-
         if @parser
             @doc = @parser.doc
         else
+            @doc = XML::Document.new
             @doc.root = XML::Node.new("rss")
         end
 
