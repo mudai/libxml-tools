@@ -46,16 +46,25 @@ class TestRssParser < Test::Unit::TestCase
             assert_kind_of(XML::Feed::Parser::Rss::Item, item)
             if item.link
                 assert_kind_of(XML::Feed::Parser::Tag, item.link)
+                assert_nothing_raised do
+                    "string" + item.link
+                end
                 assert_kind_of(URI, item.link.data)
                 assert_kind_of(Hash, item.link.property)
             end
             if item.description
                 assert_kind_of(XML::Feed::Parser::Tag, item.description)
+                assert_nothing_raised do
+                    "string" + item.description
+                end
                 assert_kind_of(String, item.description.data)
                 assert_kind_of(Hash, item.description.property)
             end
             if item.title
                 assert_kind_of(XML::Feed::Parser::Tag, item.title)
+                assert_nothing_raised do
+                    "string" + item.title
+                end
                 assert_kind_of(String, item.title.data)
                 assert_kind_of(Hash, item.title.property)
             end

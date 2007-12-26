@@ -35,6 +35,8 @@ module XML
                 def to_s
                     @data.to_s
                 end
+
+                alias to_str to_s
             end
 
             class Base 
