@@ -47,5 +47,24 @@ class TestBuilderInterface < Test::Unit::TestCase
         end
 
         assert_equal(parser.doc.to_s, builder.to_xml)
+
+        assert_nothing_raised do
+            builder = XML::Feed::Builder.rss("2.0")
+        end
+
+        assert_nothing_raised do
+            builder.channel.create do |x|
+                x.items.create do |y|
+                    y.description = "Foo"
+                    y.title = "Bar"
+                    y.link = URI.parse("http://funky.cold.medina.com")
+                end
+            end
+        end
+
+        assert_equal(
+            "<?xml version=\"1.0\"?>\n<rss version=\"2.0\">\n  <channel>\n    <item>\n      <title>Bar</title>\n      <description>Foo</description>\n      <link>http://funky.cold.medina.com</link>\n    </item>\n  </channel>\n</rss>\n",
+             builder.to_xml
+        )
     end
 end
