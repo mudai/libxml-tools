@@ -21,7 +21,7 @@ class XML::Feed::Builder::Rss
         end
 
         def [](x)
-            return Channel.new(@doc, @doc.root.find('/rss/channel')[x])
+            return Channel.new(@doc, @doc.root.find('/rss/channel').to_a[x])
         end
     end
 
@@ -61,12 +61,13 @@ class XML::Feed::Builder::Rss
         end
 
         def [](x)
-            return Item.new(@channel, @channel.find('./item')[x])
+            return Item.new(@channel, @channel.find('./item').to_a[x])
         end
     end
 
     class Item
         attr_reader :channel
+        attr_reader :node
 
         def initialize(channel, node=nil)
             @channel = channel
@@ -81,21 +82,27 @@ class XML::Feed::Builder::Rss
         def method_missing(method, *args)
             meth = method.to_s 
             if meth =~ /=$/ # assignment
-                @params[meth.sub(/=$/, '')] = args[0]
-            else
-                @params[meth] = args[0]
-            end
-        end
+                my_meth = meth.sub(/=$/, '')
 
-        def node
-            # unwind params and attach them to the node
-            @params.each do |key, value|
-                node = XML::Node.new(key)
-                node.content = value.to_s
+                node = XML::Node.new(my_meth)
+                node.content = args[0].to_s
                 @node << node
+                return node
             end
 
-            return @node
+            # if we're reading, we want to collect each node that matches our method name.
+            # the problem is, XML::XPath::Object#find doesn't work on detached nodes, which ours
+            # is at this state. So we have to search manually.
+           
+            array = []    
+
+            @node.each do |x|
+                if x.name == meth 
+                    array.push x
+                end
+            end
+
+            return array
         end
     end
 end
