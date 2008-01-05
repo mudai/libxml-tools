@@ -38,6 +38,8 @@ class XML::Feed::Builder::Rss
         def items
             return Items.new(@doc, @node)
         end
+
+        alias item items
     end
 
     class Items
@@ -102,7 +104,7 @@ class XML::Feed::Builder::Rss
                 end
             end
 
-            return array
+            return array.length > 1 ? array : array[0]
         end
     end
 end
