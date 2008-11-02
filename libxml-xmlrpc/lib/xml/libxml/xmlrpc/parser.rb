@@ -99,7 +99,14 @@ module XML::XMLRPC
                     "String is empty - libxml-ruby would normally crash your program here."
             end
 
-            document = XML::Parser.string(@string).parse
+            if Object.const_defined?("LibXML")
+                klass = LibXML::XML
+            else
+                klass = XML
+            end
+
+
+            document = klass::Parser.string(@string).parse
             node = document.root
             case node.name
             when "methodCall"

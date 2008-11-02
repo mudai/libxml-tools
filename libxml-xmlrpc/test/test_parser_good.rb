@@ -3,6 +3,11 @@ require 'xml/libxml/xmlrpc/parser'
 require 'stringio'
 
 class TestParserGood < Test::Unit::TestCase
+
+    def setup
+        @libxml_class = Object.const_defined?("LibXML") ? LibXML::XML : XML
+    end
+
     def test_constructor
         assert_raise XML::XMLRPC::ParserError do
             XML::XMLRPC::Parser.new(nil)
@@ -14,7 +19,7 @@ class TestParserGood < Test::Unit::TestCase
 
         # should raise a LibXML error because there's nothing to parse
         # XXX libxml no likey empty string.
-        assert_raise XML::Parser::ParseError do
+        assert_raise @libxml_class::Parser::ParseError do
             XML::XMLRPC::Parser.new("asdf")
         end
     end
